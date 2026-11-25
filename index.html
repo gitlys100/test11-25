@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>학생 5명 성적 입력 및 계산기</title>
+    <style>
+        body {
+            font-family: 'Malgun Gothic', sans-serif;
+            background-color: #f4f6f9;
+            display: flex;
+            justify-content: center;
+            padding: 40px 20px;
+            margin: 0;
+        }
+        .container {
+            background: white;
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            width: 100%;
+            max-width: 450px;
+        }
+        h2 {
+            text-align: center;
+            color: #333;
+            margin-top: 0;
+        }
+        .input-row {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 12px;
+        }
+        input {
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 6px;
+            font-size: 15px;
+        }
+        input[type="text"] {
+            flex: 2;
+        }
+        input[type="number"] {
+            flex: 1;
+        }
+        button {
+            width: 100%;
+            padding: 12px;
+            background-color: #4a90e2;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            margin-top: 10px;
+        }
+        button:hover {
+            background-color: #357abd;
+        }
+        .result-box {
+            margin-top: 25px;
+            padding-top: 20px;
+            border-top: 2px solid #eee;
+            display: none; /* 결과 계산 전에는 숨김 */
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 15px;
+        }
+        th, td {
+            border-bottom: 1px solid #eee;
+            padding: 10px;
+            text-align: center;
+        }
+        th {
+            background-color: #f8f9fa;
+            color: #555;
+        }
+        .summary {
+            background-color: #eef5fd;
+            padding: 15px;
+            border-radius: 8px;
+            color: #2c3e50;
+            line-height: 1.6;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h2>학생 5명 성적 입력</h2>
+    
+    <!-- 5명의 입력 칸 -->
+    <div id="input-list">
+        <div class="input-row">
+            <input type="text" class="name" placeholder="1번 학생 이름">
+            <input type="number" class="score" placeholder="점수" min="0" max="100">
+        </div>
+        <div class="input-row">
+            <input type="text" class="name" placeholder="2번 학생 이름">
+            <input type="number" class="score" placeholder="점수" min="0" max="100">
+        </div>
+        <div class="input-row">
+            <input type="text" class="name" placeholder="3번 학생 이름">
+            <input type="number" class="score" placeholder="점수" min="0" max="100">
+        </div>
+        <div class="input-row">
+            <input type="text" class="name" placeholder="4번 학생 이름">
+            <input type="number" class="score" placeholder="점수" min="0" max="100">
+        </div>
+        <div class="input-row">
+            <input type="text" class="name" placeholder="5번 학생 이름">
+            <input type="number" class="score" placeholder="점수" min="0" max="100">
+        </div>
+    </div>
+
+    <button onclick="calculateScores()">성적 결과 확인하기</button>
+
+    <!-- 결과 출력 영역 -->
+    <div id="result-box" class="result-box">
+        <table>
+            <thead>
+                <tr>
+                    <th>이름</th>
+                    <th>성적</th>
+                </tr>
+            </thead>
+            <tbody id="result-table"></tbody>
+        </table>
+        <div id="summary" class="summary"></div>
+    </div>
+</div>
+
+<script>
+    function calculateScores() {
+        const names = document.querySelectorAll('.name');
+        const scores = document.querySelectorAll('.score');
+        
+        let students = [];
+        let total = 0;
+
+        // 입력값 확인 및 배열에 저장
+        for (let i = 0; i < 5; i++) {
+            const name = names[i].value.trim();
+            const scoreVal = scores[i].value;
+
+            if (name === "" || scoreVal === "") {
+                alert((i + 1) + "번째 학생의 이름과 점수를 모두 입력해 주세요.");
+                return;
+            }
+
+            const score = Number(scoreVal);
+            students.push({ name: name, score: score });
+            total += score;
+        }
+
+        // 테이블에 결과 채우기
+        const tableBody = document.getElementById('result-table');
+        tableBody.innerHTML = "";
+        students.forEach(student => {
+            const row = `<tr><td>${student.name}</td><td>${student.score}점</td></tr>`;
+            tableBody.innerHTML += row;
+        });
+
+        // 평균 및 최고점 계산
+        const average = (total / 5).toFixed(1);
+        const topStudent = students.reduce((prev, current) => 
+            (prev.score > current.score) ? prev : current
+        );
+
+        // 요약 정보 출력
+        const summaryBox = document.getElementById('summary');
+        summaryBox.innerHTML = `
+            <strong>전체 평균:</strong> ${average}점<br>
+            <strong>최고 점수:</strong> ${topStudent.name} (${topStudent.score}점)
+        `;
+
+        // 결과 영역 화면에 표시
+        document.getElementById('result-box').style.display = 'block';
+    }
+</script>
+
+</body>
+</html>
